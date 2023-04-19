@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace TrackerLibrary
 {
+
+    /// <summary>
+    /// Represents one entry in a matchup.
+    /// </summary>
     public class MatchupEntryModel
     {
         /// <summary>
