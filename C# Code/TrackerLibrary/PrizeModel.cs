@@ -13,6 +13,10 @@ namespace TrackerLibrary
     public class PrizeModel
     {
         /// <summary>
+        /// Represnets unique identifier for the prize
+        /// </summary>
+        public int ID { get; set; }
+        /// <summary>
         /// Represents wich place recieves this price.
         /// </summary>
         public int PlaceNumber { get; set; }
@@ -38,6 +42,6 @@ namespace TrackerLibrary
         /// The Winner recieves 50% of the total amount of money given 
         /// as prize money.
         /// </example>
-        public double PrizePercentage { get; set; }
+        public decimal PrizePercentage { get; set; }
     }
 }
