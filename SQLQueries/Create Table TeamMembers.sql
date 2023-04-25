@@ -1,0 +1,8 @@
+USE Tournaments;
+GO
+CREATE TABLE TeamMembers
+(
+	ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	TeamID int FOREIGN KEY REFERENCES Teams(ID),
+	PersonID int FOREIGN KEY REFERENCES People(ID)
+);
