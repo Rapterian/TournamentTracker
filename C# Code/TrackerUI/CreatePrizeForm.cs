@@ -31,10 +31,8 @@ namespace TrackerUI
                 prizeModel.PrizeAmount=prizeAmountValue.Value;
                 prizeModel.PrizePercentage = prizePercentageValue.Value;
 
-                foreach (IDataConnection dataConnection in GlobalConfig.Connections)
-                {
-                    dataConnection.CreatePrize(prizeModel);
-                }
+                GlobalConfig.Connection.CreatePrize(prizeModel);
+                
 
                 ResetForm();
 

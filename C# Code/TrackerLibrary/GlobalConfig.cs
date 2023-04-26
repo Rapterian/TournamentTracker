@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,35 +13,46 @@ namespace TrackerLibrary
     /// </summary>
     public static class GlobalConfig
     {
-      
+
         /// <summary>
         /// A list of the diffrent sort of connections where data will be sored
         /// </summary>
         /// <example>
         /// database,textfile
         /// </example>
-        public  static List<IDataConnection> Connections { get; private set; }= new List<IDataConnection>();
+        public static IDataConnection Connection { get; private set; }
 
         /// <summary>
         /// Initializes the connections that was chosen to store data in
         /// </summary>
         /// <param name="databse">boolean that detirmens if a database should be used to store data</param>
         /// <param name="textFile">boolean that detirmens if a text file should be used to store data</param>
-        public static void InitializeConnections(bool databse,bool textFile)
+        public static void InitializeConnections(DatabaseType type)
         {
-            if (databse)
-            {
-                //TODO - Set up the SQL connector properly
-                SqlConnector sqlConnector = new SqlConnector();
-                Connections.Add(sqlConnector);
-            }
 
-            if(textFile)
+            switch (type)
             {
-                //TODO - Set up the text connection properly
-                TextConnector textConnection = new TextConnector();
-                Connections.Add(textConnection);
+                case DatabaseType.SQL:
+                    //TODO - Set up the SQL connector properly
+                    SqlConnector sqlConnector = new SqlConnector();
+                    Connection = sqlConnector;
+                    break;
+                case DatabaseType.TextFile:
+                    //TODO - Set up the text connection properly
+                    TextConnector textConnection = new TextConnector();
+                    Connection = textConnection;
+                    break;
             }
+        }
+
+        /// <summary>
+        /// Returns the connection string
+        /// </summary>
+        /// <param name="name">Represents the name of the connectionstring wanted</param>
+        /// <returns>the connectionstring with name specified</returns>
+        public static string CnnString(string name)
+        {
+            return ConfigurationManager.ConnectionStrings[name].ConnectionString;
         }
     }
 }
