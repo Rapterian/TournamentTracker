@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TrackerLibrary.DataAccess;
 
 namespace TrackerLibrary
 {
@@ -37,7 +38,7 @@ namespace TrackerLibrary
             if(textFile)
             {
                 //TODO - Set up the text connection properly
-                TextConnection textConnection = new TextConnection();
+                TextConnector textConnection = new TextConnector();
                 Connections.Add(textConnection);
             }
         }
