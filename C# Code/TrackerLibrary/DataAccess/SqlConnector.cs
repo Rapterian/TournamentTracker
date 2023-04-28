@@ -8,16 +8,36 @@ using System.Text;
 using System.Threading.Tasks;
 using TrackerLibrary.Models;
 
-//@PlaceNumber int,
-//@PlaceName nvarchar(100),
-//@PrizeAmount money,
-//@PrizePercentage float,
-//@ID int = 0 out
+
 
 namespace TrackerLibrary.DataAccess
 {
     public class SqlConnector : IDataConnection
     {
+        /// <summary>
+        /// Saves a new person to the database
+        /// </summary>
+        /// <param name="personModel">the persons information</param>
+        /// <returns>the persons information including the ID</returns>
+        public PersonModel CreatePerson(PersonModel personModel)
+        {
+            using (IDbConnection connection = new SqlConnection(GlobalConfig.CnnString("Tournaments")))
+            {
+                var p = new DynamicParameters();
+                p.Add("@FirstName", personModel.FirstName);
+                p.Add("@LastName", personModel.LastName);
+                p.Add("@EmailAddress", personModel.EmailAddres);
+                p.Add("@CellphoneNumber", personModel.CellphoneNumber);
+                p.Add("@ID", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+                connection.Execute("dbo.spPeople_Insert", p, commandType: CommandType.StoredProcedure);
+
+                personModel.ID = p.Get<int>("@ID");
+
+                return personModel;
+            }
+        }
+
         /// <summary>
         /// Saves a new prize to the database
         /// </summary>

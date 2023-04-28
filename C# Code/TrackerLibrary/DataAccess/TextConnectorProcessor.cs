@@ -64,6 +64,32 @@ namespace TrackerLibrary.DataAccess.TextHelpers
         }
 
         /// <summary>
+        /// converts list of strings to list of people
+        /// </summary>
+        /// <param name="lines">list of strings</param>
+        /// <returns>list of prizeModels</returns>
+        public static List<PersonModel> ConvertToPersonModel(this List<string> lines)
+        {
+            List<PersonModel> output = new List<PersonModel>();
+
+            foreach (string line in lines)
+            {
+                string[] cols = line.Split(';');
+
+                PersonModel p = new PersonModel();
+                p.ID = int.Parse(cols[0]);
+                p.FirstName = cols[1];
+                p.LastName = cols[2];
+                p.EmailAddres = cols[3];
+                p.CellphoneNumber = cols[4];
+
+                output.Add(p);
+            }
+
+            return output;
+        }
+
+        /// <summary>
         /// converts list of prizemodels to list of strings and saves it to file specified
         /// </summary>
         /// <param name="prizeModels">list of prize models</param>
@@ -75,6 +101,23 @@ namespace TrackerLibrary.DataAccess.TextHelpers
             foreach(PrizeModel p in prizeModels)
             {
                 lines.Add($"{p.ID};{p.PlaceNumber};{p.PlaceName};{p.PrizeAmount};{p.PrizePercentage}");
+            }
+
+            File.WriteAllLines(fileName.FullFilePath(), lines);
+        }
+
+        /// <summary>
+        /// converts list of person models to list of strings and saves it to file specified
+        /// </summary>
+        /// <param name="personModels">list of person models</param>
+        /// <param name="fileName">file name</param>
+        public static void SaveToPersonFile(this List<PersonModel> personModels, string fileName)
+        {
+            List<string> lines = new List<string>();
+
+            foreach (PersonModel p in personModels)
+            {
+                lines.Add($"{p.ID};{p.FirstName};{p.LastName};{p.EmailAddres};{p.CellphoneNumber}");
             }
 
             File.WriteAllLines(fileName.FullFilePath(), lines);
