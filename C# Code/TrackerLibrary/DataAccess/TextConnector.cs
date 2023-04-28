@@ -70,5 +70,10 @@ namespace TrackerLibrary.DataAccess
 
             return prizeModel;
         }
+
+        public List<PersonModel> GetPerson_All()
+        {
+            return PersonFile.FullFilePath().LoadFile().ConvertToPersonModel();
+        }
     }
 }
