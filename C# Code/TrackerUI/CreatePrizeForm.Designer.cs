@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CreatePrizeForm));
-            headerLabel = new Label();
             placeNumberValue = new NumericUpDown();
+            headerLabel = new Label();
             placeNumberLabel = new Label();
             prizeAmountValue = new NumericUpDown();
             prizeAmountLabel = new Label();
@@ -45,6 +45,14 @@
             ((System.ComponentModel.ISupportInitialize)prizePercentageValue).BeginInit();
             SuspendLayout();
             // 
+            // placeNumberValue
+            // 
+            placeNumberValue.Location = new Point(254, 74);
+            placeNumberValue.Margin = new Padding(5, 6, 5, 6);
+            placeNumberValue.Name = "placeNumberValue";
+            placeNumberValue.Size = new Size(162, 35);
+            placeNumberValue.TabIndex = 10;
+            // 
             // headerLabel
             // 
             headerLabel.AutoSize = true;
@@ -55,14 +63,6 @@
             headerLabel.Size = new Size(209, 50);
             headerLabel.TabIndex = 6;
             headerLabel.Text = "Create Prize";
-            // 
-            // placeNumberValue
-            // 
-            placeNumberValue.Location = new Point(254, 74);
-            placeNumberValue.Margin = new Padding(5, 6, 5, 6);
-            placeNumberValue.Name = "placeNumberValue";
-            placeNumberValue.Size = new Size(162, 35);
-            placeNumberValue.TabIndex = 10;
             // 
             // placeNumberLabel
             // 
@@ -185,6 +185,7 @@
             Margin = new Padding(5, 6, 5, 6);
             Name = "CreatePrizeForm";
             Text = "Create Prize";
+            Load += CreatePrizeForm_Load;
             ((System.ComponentModel.ISupportInitialize)placeNumberValue).EndInit();
             ((System.ComponentModel.ISupportInitialize)prizeAmountValue).EndInit();
             ((System.ComponentModel.ISupportInitialize)prizePercentageValue).EndInit();

@@ -26,13 +26,13 @@ namespace TrackerUI
             {
                 PrizeModel prizeModel = new PrizeModel();
 
-                prizeModel.PlaceNumber =Convert.ToInt32(placeNumberValue.Value);
+                prizeModel.PlaceNumber = Convert.ToInt32(placeNumberValue.Value);
                 prizeModel.PlaceName = placeNameValue.Text;
-                prizeModel.PrizeAmount=prizeAmountValue.Value;
+                prizeModel.PrizeAmount = prizeAmountValue.Value;
                 prizeModel.PrizePercentage = prizePercentageValue.Value;
 
                 GlobalConfig.Connection.CreatePrize(prizeModel);
-                
+
 
                 ResetForm();
 
@@ -60,6 +60,13 @@ namespace TrackerUI
             placeNumberValue.Value = 0;
             prizeAmountValue.Value = 0;
             prizePercentageValue.Value = 0;
+        }
+
+        private void CreatePrizeForm_Load(object sender, EventArgs e)
+        {
+            placeNumberValue.Controls.RemoveAt(0);
+            prizeAmountValue.Controls.RemoveAt(0);
+            prizePercentageValue.Controls.RemoveAt(0);
         }
     }
 }
