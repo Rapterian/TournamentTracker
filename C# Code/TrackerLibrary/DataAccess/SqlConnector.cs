@@ -17,7 +17,7 @@ namespace TrackerLibrary.DataAccess
 
         private const string db = "Tournaments";
         /// <summary>
-        /// Saves a new person to the database
+        /// Saves a new tm to the database
         /// </summary>
         /// <param name="personModel">the persons information</param>
         /// <returns>the persons information including the ID</returns>
@@ -61,6 +61,31 @@ namespace TrackerLibrary.DataAccess
                 prizeModel.ID = p.Get<int>("@ID");
 
                 return prizeModel;
+            }
+        }
+
+        public TeamModel CreateTeam(TeamModel teamModel)
+        {
+            using (IDbConnection connection = new SqlConnection(GlobalConfig.CnnString(db)))
+            {
+                var p = new DynamicParameters();
+                p.Add("@teamName", teamModel.TeamName);
+                p.Add("@ID", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+                connection.Execute("dbo.spTeams_Insert", p, commandType: CommandType.StoredProcedure);
+
+                teamModel.ID = p.Get<int>("@ID");
+
+                foreach(PersonModel tm in teamModel.TeamMembers)
+                {
+                    p = new DynamicParameters();
+                    p.Add("@teamID", teamModel.ID);
+                    p.Add("@personID", tm.ID);
+
+                    connection.Execute("dbo.spTeamMembers_Insert", p, commandType: CommandType.StoredProcedure);
+                }
+
+                return teamModel;
             }
         }
 

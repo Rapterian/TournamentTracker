@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TrackerLibrary.Models;
 
+
 namespace TrackerLibrary.DataAccess.TextHelpers
 {
     /// <summary>
@@ -88,6 +89,39 @@ namespace TrackerLibrary.DataAccess.TextHelpers
 
             return output;
         }
+        /// <summary>
+        /// converts list of strings to list of teams
+        /// </summary>
+        /// <param name="lines"></param>
+        /// <param name="peopleFileName"></param>
+        /// <returns>list of TeamModel</returns>
+        public static List<TeamModel> ConvertToTeamModel(this List<string> lines, string peopleFileName)
+        {
+            //id,team name,list of ids seperated by the pipe
+            //3,A Team,1|3|5
+            List<TeamModel> output = new List<TeamModel>();
+            List<PersonModel> people = peopleFileName.FullFilePath().LoadFile().ConvertToPersonModel();
+
+            foreach(string line in lines)
+            {
+                string[] cols = line.Split(',');
+
+                TeamModel t = new TeamModel();
+                t.ID = int.Parse(cols[0]);
+                t.TeamName = cols[1];
+
+                string[] personIds = cols[2].Split('|');
+
+                foreach(string id in personIds)
+                {
+                    t.TeamMembers.Add(people.Where(x => x.ID == int.Parse(id)).First());
+                }
+
+                output.Add(t);
+            }
+
+            return output;
+        }   
 
         /// <summary>
         /// converts list of prizemodels to list of strings and saves it to file specified
@@ -121,6 +155,49 @@ namespace TrackerLibrary.DataAccess.TextHelpers
             }
 
             File.WriteAllLines(fileName.FullFilePath(), lines);
+        }
+        /// <summary>
+        /// cinverts list of team models to list of strings and saves it to file specified
+        /// </summary>
+        /// <param name="teamModels"></param>
+        /// <param name="fileName"></param>
+        public static void SaveToTeamFile(this List<TeamModel> teamModels, string fileName)
+        {
+            List<string> lines = new List<string>();
+
+            //id,team name,list of ids seperated by the pipe
+            foreach(TeamModel t in teamModels)
+            {
+                lines.Add($"{t.ID},{t.TeamName},{ConvertPeopleListToString(t.TeamMembers)}");
+            }
+
+            File.WriteAllLines(fileName.FullFilePath(), lines);
+        }
+        /// <summary>
+        /// creates a string of all the IDs of the people in the team
+        /// </summary>
+        /// <param name="people"></param>
+        /// <returns>string of IDs</returns>
+        private static string ConvertPeopleListToString(List<PersonModel> people)
+        {
+            string output = "";
+
+            //if there are no people in the team return empty string
+            if(people.Count==0)
+            {
+                return "";
+            }
+
+            //add all the IDs to the string
+            foreach(PersonModel p in people)
+            {
+                output += $"{p.ID}|";
+            }
+
+            //taking of the last pipe
+            output = output.Substring(0, output.Length - 1);
+
+            return output;
         }
     }
 }

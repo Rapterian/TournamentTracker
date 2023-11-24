@@ -13,7 +13,12 @@ namespace TrackerLibrary.DataAccess
 
         private const string PrizesFile = "PrizeModels.csv";
         private const string PersonFile = "PersonModels.csv";
-
+        private const string TeamFile = "TeamModels.csv";
+        /// <summary>
+        /// Saves a new person to the text file
+        /// </summary>
+        /// <param name="personModel"></param>
+        /// <returns>the person information including the ID</returns>
         public PersonModel CreatePerson(PersonModel personModel)
         {
             // Load textFile and Covert text -> List<Prizemodel>
@@ -69,6 +74,27 @@ namespace TrackerLibrary.DataAccess
             prizes.SaveToPrizeFile(PrizesFile);
 
             return prizeModel;
+        }
+        /// <summary>
+        /// Saves a new team to the text file
+        /// </summary>
+        /// <param name="teamModel"></param>
+        /// <returns>the team information including the ID</returns>
+        public TeamModel CreateTeam(TeamModel teamModel)
+        {
+            List<TeamModel> teams = TeamFile.FullFilePath().LoadFile().ConvertToTeamModel(PersonFile);
+
+            int currentId = 1;
+            if (teams.Count > 0)
+            {
+                currentId = teams.OrderByDescending(x => x.ID).First().ID + 1;
+            }
+
+            teams.Add(teamModel);
+
+            teams.SaveToTeamFile(TeamFile);
+
+            return teamModel;
         }
 
         public List<PersonModel> GetPerson_All()

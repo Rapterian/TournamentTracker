@@ -37,13 +37,13 @@ namespace TrackerUI
             //have to make it null first so that it refreshes every time the wireup method is called
             selectTeamMemberDropDown.DataSource = null;
 
-            selectTeamMemberDropDown.DataSource= availableTeamMembers;
+            selectTeamMemberDropDown.DataSource = availableTeamMembers;
             selectTeamMemberDropDown.DisplayMember = "FullName";
 
             teamMembersListBox.DataSource = null;
 
-            teamMembersListBox.DataSource= selectedTeamMembers;
-            teamMembersListBox.DisplayMember = "FullName"; 
+            teamMembersListBox.DataSource = selectedTeamMembers;
+            teamMembersListBox.DisplayMember = "FullName";
         }
         private void createMemberButton_Click(object sender, EventArgs e)
         {
@@ -76,11 +76,11 @@ namespace TrackerUI
         /// <returns>returns all the mistakes made in a string</returns>
         private string ValidateAddMembersForm()
         {
-            string output="Please fill in the following field(s):";
+            string output = "Please fill in the following field(s):";
 
             if (memberFirstNameValue.Text.Length == 0)
             {
-                output=String.Concat(output, "\nFirst Name");
+                output = String.Concat(output, "\nFirst Name");
             }
 
             if (memberLastNameValue.Text.Length == 0)
@@ -100,7 +100,7 @@ namespace TrackerUI
                 output = String.Concat(output, "\nCellphone(must be 10 numbers)");
             }
 
-            if(output== "Please fill in the following field(s):")
+            if (output == "Please fill in the following field(s):")
             {
                 output = "";
             }
@@ -125,7 +125,7 @@ namespace TrackerUI
         /// </summary>
         private void CreateSampleData()
         {
-            availableTeamMembers.Add(new PersonModel { FirstName = "Tim",LastName="Corey" });
+            availableTeamMembers.Add(new PersonModel { FirstName = "Tim", LastName = "Corey" });
             availableTeamMembers.Add(new PersonModel { FirstName = "Sue", LastName = "Storm" });
 
             selectedTeamMembers.Add(new PersonModel { FirstName = "JJ", LastName = "De Kock" });
@@ -156,10 +156,23 @@ namespace TrackerUI
 
                 WireUpList();
             }
-            
-            
+
+
         }
 
-        
+        private void createTeamButton_Click(object sender, EventArgs e)
+        {
+            
+            TeamModel t = new TeamModel();
+
+            // TODO - Make sure the team name is not empty
+            t.TeamName = teamNameValue.Text;
+            t.TeamMembers = selectedTeamMembers;
+
+            t = GlobalConfig.Connection.CreateTeam(t); 
+            
+            // TODO - if we aren't closing this form after creation, reset the form
+
+        }
     }
 }
