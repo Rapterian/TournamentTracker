@@ -15,6 +15,8 @@ namespace TrackerUI
     public partial class CreateTournamentForm : Form
     {
         List<TeamModel> availableTeams = GlobalConfig.Connection.GetTeam_All();
+        List<TeamModel> selectedTeams = new List<TeamModel>();
+        List<PrizeModel> selectedPrizes = new List<PrizeModel>();
         public CreateTournamentForm()
         {
             InitializeComponent();
@@ -26,6 +28,14 @@ namespace TrackerUI
             selectTeamDropDown.DataSource = null;
             selectTeamDropDown.DataSource = availableTeams;
             selectTeamDropDown.DisplayMember = "TeamName";
+
+            tournamentTeamsListBox.DataSource = null;
+            tournamentTeamsListBox.DataSource = selectedTeams;
+            tournamentTeamsListBox.DisplayMember = "TeamName";
+
+            tournamentPrizesListBox.DataSource = null;
+            tournamentPrizesListBox.DataSource = selectedPrizes;
+            tournamentPrizesListBox.DisplayMember = "PlaceName";
         }
 
         private void roundDropDown_SelectedIndexChanged(object sender, EventArgs e)
