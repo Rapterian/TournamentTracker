@@ -20,10 +20,10 @@ namespace TrackerUI
         public CreateTournamentForm()
         {
             InitializeComponent();
-            InitializeLists();
+            WireUpList();
         }
 
-        private void InitializeLists()
+        private void WireUpList()
         {
             selectTeamDropDown.DataSource = null;
             selectTeamDropDown.DataSource = availableTeams;
@@ -51,6 +51,18 @@ namespace TrackerUI
         private void button1_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void addTeamButton_Click(object sender, EventArgs e)
+        {
+            TeamModel t = (TeamModel)selectTeamDropDown.SelectedItem;
+            if (t != null)
+            {
+                availableTeams.Remove(t);
+                selectedTeams.Add(t);
+
+                WireUpList();
+            }
         }
     }
 }

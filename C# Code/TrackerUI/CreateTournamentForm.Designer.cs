@@ -144,6 +144,7 @@
             addTeamButton.TabIndex = 14;
             addTeamButton.Text = "Add Team";
             addTeamButton.UseVisualStyleBackColor = true;
+            addTeamButton.Click += addTeamButton_Click;
             // 
             // createPrize
             // 
