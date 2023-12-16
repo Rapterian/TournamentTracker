@@ -16,15 +16,16 @@ namespace TrackerUI
     {
         private List<PersonModel> availableTeamMembers = GlobalConfig.Connection.GetPerson_All();
         private List<PersonModel> selectedTeamMembers = new List<PersonModel>();
+        private ITeamReqeuster callingForm;
 
-
-        public CreateTeamForm()
+        public CreateTeamForm(ITeamReqeuster caller)
         {
             InitializeComponent();
 
             //CreateSampleData();
 
             WireUpList();
+            callingForm = caller;
         }
         /// <summary>
         /// Makes the team member dropdown show all available team member's first name and las name 
@@ -169,9 +170,10 @@ namespace TrackerUI
             t.TeamName = teamNameValue.Text;
             t.TeamMembers = selectedTeamMembers;
 
-            t = GlobalConfig.Connection.CreateTeam(t); 
-            
-            // TODO - if we aren't closing this form after creation, reset the form
+            GlobalConfig.Connection.CreateTeam(t);
+
+            callingForm.teamComplete(t);
+            this.Close();
 
         }
     }
