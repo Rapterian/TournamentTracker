@@ -7,11 +7,16 @@ using System.Threading.Tasks;
 namespace TrackerLibrary.Models
 {
 
+
     /// <summary>
     /// Represents one mathcup in a round.
     /// </summary>
     public class MatchupModel
     {
+        /// <summary>
+        /// Represnets unique identifier for the matchup
+        /// </summary>
+        public int ID { get; set; }
         /// <summary>
         /// Represents a List of entries.
         /// </summary>

@@ -12,6 +12,7 @@ namespace TrackerLibrary.Models
     /// </summary>
     public class MatchupEntryModel
     {
+
         /// <summary>
         /// Represents one team in the matchup.
         /// </summary>
