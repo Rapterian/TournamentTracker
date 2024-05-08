@@ -3,6 +3,7 @@ GO
 /****** Object:  StoredProcedure [dbo].[spTeams_GetAll]    Script Date: 2023/12/02 19:04:28 ******/
 SET ANSI_NULLS ON
 GO
+/****** Object:  StoredProcedure [dbo].[spTeams_GetAll]    Script Date: 2023/12/16 18:53:34 ******/
 SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
