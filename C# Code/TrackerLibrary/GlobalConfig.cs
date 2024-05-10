@@ -13,6 +13,12 @@ namespace TrackerLibrary
     /// </summary>
     public static class GlobalConfig
     {
+        public const string PrizesFile = "PrizeModels.csv";
+        public const string PersonFile = "PersonModels.csv";
+        public const string TeamFile = "TeamModels.csv";
+        public const string TournamentFile = "TournamentModels.csv";
+        public const string MatchupFile = "MatchupModels.csv";
+        public const string MatchupEntryFile = "MatchupEntryModels.csv";
 
         /// <summary>
         /// A list of the diffrent sort of connections where data will be sored

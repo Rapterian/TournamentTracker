@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using TrackerLibrary.Models;
@@ -40,6 +41,7 @@ namespace TrackerLibrary
             List<MatchupModel> previousRound = model.Rounds[0];
             List<MatchupModel> currRound = new List<MatchupModel>();
             MatchupModel currMatchup = new MatchupModel();
+            currMatchup.Entries= new List<MatchupEntryModel>();
 
             while (round <= rounds)
             {
@@ -52,6 +54,7 @@ namespace TrackerLibrary
                         currMatchup.MatchupRound = round;
                         currRound.Add(currMatchup);
                         currMatchup = new MatchupModel();
+                        currMatchup.Entries = new List<MatchupEntryModel>();
                     }
                 }
 
@@ -67,9 +70,11 @@ namespace TrackerLibrary
         {
             List<MatchupModel> output = new List<MatchupModel>();
             MatchupModel curr = new MatchupModel();
+            curr.Entries = new List<MatchupEntryModel>();
 
             foreach (TeamModel team in randomizedTeams)
             {
+
                 curr.Entries.Add(new MatchupEntryModel { TeamCompeting = team });
 
                 if (byes > 0 || curr.Entries.Count > 1)
@@ -77,6 +82,7 @@ namespace TrackerLibrary
                     curr.MatchupRound = 1;
                     output.Add(curr);
                     curr = new MatchupModel();
+                    curr.Entries = new List<MatchupEntryModel>();
 
                     if (byes > 0)
                     {
