@@ -23,6 +23,11 @@ namespace TrackerLibrary.Models
         public List<MatchupEntryModel> Entries { get; set; }
 
         /// <summary>
+        /// The ID from the database that will be used to identify the winner.
+        /// </summary>
+        public int WinnerID { get; set; }
+
+        /// <summary>
         /// Represents the winner in the matchup.
         /// </summary>
         public TeamModel Winner { get; set; }
