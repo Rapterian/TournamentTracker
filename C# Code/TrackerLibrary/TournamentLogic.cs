@@ -103,7 +103,7 @@ namespace TrackerLibrary
                 totalTeams *= 2;
             }
 
-            int output = totalTeams - count;
+            int output = count- totalTeams;
             return output;
         }
 
