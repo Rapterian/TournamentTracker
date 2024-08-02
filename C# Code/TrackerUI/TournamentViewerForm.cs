@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using TrackerLibrary;
 using TrackerLibrary.Models;
 
 namespace TrackerUI
@@ -19,7 +20,7 @@ namespace TrackerUI
 
             LoadFormData();
             LoadRounds();
-            
+
 
 
         }
@@ -83,14 +84,32 @@ namespace TrackerUI
                     selectedMatchups = new BindingList<MatchupModel>(matchups);
                 }
             }
-            
+            // TODO - make sure Unplayed checkbox still works
+            var filteredMatchups = selectedMatchups.Where(m => m.Winner == null || !unplayedOnlyCheckBox.Checked).ToList();
+            selectedMatchups = new BindingList<MatchupModel>(filteredMatchups);
             //matchupBinding.ResetBindings(false);
             WireupMatchupsLists();
+
+            displayMatchupInfo();
+
+        }
+
+        private void displayMatchupInfo()
+        {
+            bool isVisible = (selectedMatchups.Count > 0);
+            teamOneNameLabel.Visible = isVisible;
+            teamOneScoreLabel.Visible = isVisible;
+            teamOneScoreValue.Visible = isVisible;
+            teamTwoNameLabel.Visible = isVisible;
+            teamTwoScoreLabel.Visible = isVisible;
+            teamTwoScoreValue.Visible = isVisible;
+            versusLabel.Visible = isVisible;
+            scoreButton.Visible = isVisible;
         }
 
         private void LoadMatchup()
         {
-            
+
             MatchupModel m = (MatchupModel)matchupListBox.SelectedItem;
 
             for (int i = 0; i < m.Entries.Count; i++)
@@ -100,15 +119,15 @@ namespace TrackerUI
                     if (m.Entries[0].TeamCompeting != null)
                     {
                         teamOneNameLabel.Text = m.Entries[0].TeamCompeting.TeamName;
-                        teamOneScoreValue.Text = m.Entries[0].Score.ToString();
+                        teamOneScoreValue.Value = (decimal)m.Entries[0].Score;
 
                         teamTwoNameLabel.Text = "<bye>";
-                        teamTwoScoreValue.Text = "0";
+                        teamTwoScoreValue.Value = 0;
                     }
                     else
                     {
                         teamOneNameLabel.Text = "Not Yet Set";
-                        teamOneScoreValue.Text = "";
+                        teamOneScoreValue.Value = 0;
                     }
 
                 }
@@ -118,12 +137,12 @@ namespace TrackerUI
                     if (m.Entries[1].TeamCompeting != null)
                     {
                         teamTwoNameLabel.Text = m.Entries[1].TeamCompeting.TeamName;
-                        teamTwoScoreValue.Text = m.Entries[1].Score.ToString();
+                        teamTwoScoreValue.Value = (decimal)m.Entries[1].Score;
                     }
                     else
                     {
                         teamTwoNameLabel.Text = "Not Yet Set";
-                        teamTwoScoreValue.Text = "0";
+                        teamTwoScoreValue.Value = 0;
                     }
                 }
             }
@@ -132,6 +151,73 @@ namespace TrackerUI
         private void matchupListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             LoadMatchup();
+        }
+
+        private void unplayedOnlyCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            LoadMatchups();
+        }
+
+        private void scoreButton_Click(object sender, EventArgs e)
+        {
+            MatchupModel m = (MatchupModel)matchupListBox.SelectedItem;
+
+            for (int i = 0; i < m.Entries.Count; i++)
+            {
+                if (i == 0)
+                {
+                    if (m.Entries[0].TeamCompeting != null)
+                    {
+                        teamOneNameLabel.Text = m.Entries[0].TeamCompeting.TeamName;
+                        m.Entries[0].Score = (double)teamOneScoreValue.Value;
+                    }
+
+                }
+
+                if (i == 1)
+                {
+                    if (m.Entries[1].TeamCompeting != null)
+                    {
+                        teamTwoNameLabel.Text = m.Entries[1].TeamCompeting.TeamName;
+                        m.Entries[1].Score = (double)teamOneScoreValue.Value;
+                    }
+                }
+            }
+
+            if (teamOneScoreValue.Value > teamTwoScoreValue.Value)
+            {
+                m.Winner = m.Entries[0].TeamCompeting;
+            }
+            else if (teamTwoScoreValue.Value > teamOneScoreValue.Value)
+            {
+                m.Winner = m.Entries[1].TeamCompeting;
+            }
+            else
+            {
+                MessageBox.Show("We do not allow ties in this application.");
+            }
+
+            foreach(List<MatchupModel> round in tournament.Rounds)
+            {
+                foreach(MatchupModel rm in round)
+                {
+                    foreach(MatchupEntryModel me in rm.Entries)
+                    {
+                        if (me.ParentMatchup != null)
+                        {
+                            if (me.ParentMatchup.ID == m.ID)
+                            {
+                                me.TeamCompeting = m.Winner;
+                                GlobalConfig.Connection.UpdateMatchup(rm);
+                            }
+                        }
+                    }
+                }
+            }
+
+            LoadMatchups();
+
+            GlobalConfig.Connection.UpdateMatchup(m);
         }
     }
 }
