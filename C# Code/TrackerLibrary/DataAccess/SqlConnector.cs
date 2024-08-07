@@ -21,7 +21,7 @@ namespace TrackerLibrary.DataAccess
         /// </summary>
         /// <param name="personModel">the persons information</param>
         /// <returns>the persons information including the ID</returns>
-        public PersonModel CreatePerson(PersonModel personModel)
+        public void CreatePerson(PersonModel personModel)
         {
             using (IDbConnection connection = new SqlConnection(GlobalConfig.CnnString(db)))
             {
@@ -36,7 +36,7 @@ namespace TrackerLibrary.DataAccess
 
                 personModel.ID = p.Get<int>("@ID");
 
-                return personModel;
+                
             }
         }
 
@@ -45,7 +45,7 @@ namespace TrackerLibrary.DataAccess
         /// </summary>
         /// <param name="prizeModel">the prize information</param>
         /// <returns>the prize information including the ID</returns>
-        public PrizeModel CreatePrize(PrizeModel prizeModel)
+        public void CreatePrize(PrizeModel prizeModel)
         {
             using (IDbConnection connection = new SqlConnection(GlobalConfig.CnnString(db)))
             {
@@ -60,11 +60,11 @@ namespace TrackerLibrary.DataAccess
 
                 prizeModel.ID = p.Get<int>("@ID");
 
-                return prizeModel;
+                
             }
         }
 
-        public TeamModel CreateTeam(TeamModel teamModel)
+        public void CreateTeam(TeamModel teamModel)
         {
             using (IDbConnection connection = new SqlConnection(GlobalConfig.CnnString(db)))
             {
@@ -85,7 +85,7 @@ namespace TrackerLibrary.DataAccess
                     connection.Execute("dbo.spTeamMembers_Insert", p, commandType: CommandType.StoredProcedure);
                 }
 
-                return teamModel;
+                
             }
         }
 
@@ -100,6 +100,8 @@ namespace TrackerLibrary.DataAccess
                 SaveTournamentEntries(tournamentModel, connection);
 
                 SaveTournamentRounds(tournamentModel, connection);
+
+                TournamentLogic.UpdateTournamentResults(tournamentModel);
 
             }
         }
