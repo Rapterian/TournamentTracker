@@ -30,7 +30,7 @@ namespace TrackerLibrary.Models
         /// <summary>
         /// Represents the emailaddres of this person.
         /// </summary>
-        public string EmailAddres { get; set; }
+        public string EmailAddress { get; set; }
 
         /// <summary>
         /// Represents the cellphone number of this person.

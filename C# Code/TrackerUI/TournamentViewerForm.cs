@@ -197,8 +197,8 @@ namespace TrackerUI
             }
             catch (Exception ex)
             {
-
                 MessageBox.Show($"The application had the following error: {ex.Message}");
+                return;
             }
 
             LoadMatchups();
