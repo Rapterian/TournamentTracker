@@ -18,11 +18,18 @@ namespace TrackerUI
 
             tournament = tournamentModel;
 
+            tournament.OnTournamentComplete += Tournament_OnTournamentComplete;
+
             LoadFormData();
             LoadRounds();
 
 
 
+        }
+
+        private void Tournament_OnTournamentComplete(object? sender, DateTime e)
+        {
+            this.Close();
         }
 
         private void LoadFormData()
@@ -186,7 +193,7 @@ namespace TrackerUI
                     if (m.Entries[1].TeamCompeting != null)
                     {
                         teamTwoNameLabel.Text = m.Entries[1].TeamCompeting.TeamName;
-                        m.Entries[1].Score = (double)teamOneScoreValue.Value;
+                        m.Entries[1].Score = (double)teamTwoScoreValue.Value;
                     }
                 }
             }

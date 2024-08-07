@@ -43,5 +43,7 @@ namespace TrackerLibrary.Models
         /// as prize money.
         /// </example>
         public decimal PrizePercentage { get; set; }
+
+        
     }
 }

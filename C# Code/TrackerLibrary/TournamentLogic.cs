@@ -12,7 +12,7 @@ namespace TrackerLibrary
     public static class TournamentLogic
     {
         // TODO - Create all of the matchups
-        
+
         // Check if it is big enough - if not, add in byes
         // Create first round of matchups
         // Create every round after that - 8 matchups -> 4 matchups -> 2 matchups -> 1 matchup
@@ -40,7 +40,7 @@ namespace TrackerLibrary
             {
                 foreach (MatchupModel rm in round)
                 {
-                    if(rm.Winner==null && (rm.Entries.Any(x => x.Score != 0) || rm.Entries.Count == 1))
+                    if (rm.Winner == null && (rm.Entries.Any(x => x.Score != 0) || rm.Entries.Count == 1))
                     {
                         toScore.Add(rm);
                     }
@@ -61,8 +61,8 @@ namespace TrackerLibrary
                 //EmailLogic.SendEmail();
                 model.AlertUsersToNewRound();
             }
-            
-           
+
+
         }
 
         public static void AlertUsersToNewRound(this TournamentModel model)
@@ -90,9 +90,8 @@ namespace TrackerLibrary
                 return;
             }
 
-            string fromAddress = "";
             string to = "";
-            string subject ="";
+            string subject = "";
             StringBuilder body = new StringBuilder();
 
             if (competitor != null)
@@ -110,15 +109,15 @@ namespace TrackerLibrary
             }
             else
             {
-                subject="You have a bye week this round.";
+                subject = "You have a bye week this round.";
 
                 body.AppendLine("Enjoy your round off!");
                 body.AppendLine("~Tournament Tracker");
-            } 
-            
+            }
+
             to = p.EmailAddress;
 
-            EmailLogic.SendEmail( to, subject, body.ToString());
+            EmailLogic.SendEmail(to, subject, body.ToString());
 
         }
 
@@ -126,16 +125,109 @@ namespace TrackerLibrary
         {
             int output = 1;
 
-            foreach (List<MatchupModel>round in model.Rounds)
+            foreach (List<MatchupModel> round in model.Rounds)
             {
                 if (round.All(x => x.Winner != null))
                 {
-                    output =+ 1;
+                    output = +1;
+                }
+                else
+                {
+                    return output;
                 }
             }
 
+            //Tournament is complete
+            CompleteTournament(model);
+
+            return output - 1;
+        }
+
+        private static void CompleteTournament(TournamentModel model)
+        {
+            GlobalConfig.Connection.CompleteTournament(model);
+
+            TeamModel winners = model.Rounds.Last().First().Winner;
+            TeamModel runnerUp = model.Rounds.Last().First().Entries.Where(x => x.TeamCompeting != winners).First().TeamCompeting;
+
+            decimal winnerPrize = 0;
+            decimal runnerUpPrize = 0;
+
+            if (model.Prizes.Count > 0)
+            {
+                decimal totalIncome = model.EnteredTeams.Count * model.EntryFee;
+
+                PrizeModel firstPlacePrize = model.Prizes.Where(x => x.PlaceNumber == 1).FirstOrDefault();
+                PrizeModel secondPlacePrize = model.Prizes.Where(x => x.PlaceNumber == 2).FirstOrDefault();
+
+                if (firstPlacePrize != null)
+                {
+                    winnerPrize = firstPlacePrize.CalculatePrizePayout(totalIncome);
+                }
+                if (secondPlacePrize != null)
+                {
+                    runnerUpPrize = secondPlacePrize.CalculatePrizePayout(totalIncome);
+                }
+            }
+
+            //Send Email to all tournament
+            string subject = "";
+            StringBuilder body = new StringBuilder();
+
+            subject = $"In {model.TournamentName}, {winners.TeamName} has won!";
+
+            body.AppendLine("<h1>We have a WINNER!</h1>");
+            body.AppendLine("<p>Congrats to our winner on a great tournament. </p>");
+            body.AppendLine("<br/>");
+
+            if(winnerPrize> 0)
+            {
+                body.AppendLine($"<p>{winners.TeamName} will receive ${winnerPrize}</p>");
+            }
+            if (runnerUpPrize > 0)
+            {
+                body.AppendLine($"<p>{runnerUp.TeamName} will receive ${runnerUpPrize}</p>");
+            }
+
+            body.AppendLine("<p>Thanks for a great Tournament everyone.</p>");
+            body.AppendLine("~Tournament Tracker");
+
+
+            List<string> bcc = new List<string>();  
+
+            foreach (TeamModel t in model.EnteredTeams)
+            {
+                foreach (PersonModel p in t.TeamMembers)
+                {
+                    if (p.EmailAddress.Length > 0)
+                    {
+                        bcc.Add(p.EmailAddress);
+                    }
+                }
+            }   
+
+            EmailLogic.SendEmail(new List<string>(),bcc, subject, body.ToString());
+
+            //Complete Tournament
+            model.CompleteTournament();
+        }
+
+        private static decimal CalculatePrizePayout(this PrizeModel prize, decimal totalIncome)
+        {
+            decimal output = 0;
+
+
+            if (prize.PrizeAmount > 0)
+            {
+                output = prize.PrizeAmount;
+            }
+            else
+            {
+                output = Decimal.Multiply(totalIncome, Convert.ToDecimal(prize.PrizePercentage / 100));
+            }
+
             return output;
-        } 
+        }
 
         private static void AdvanceWinners(List<MatchupModel> models, TournamentModel tournament)
         {
@@ -169,7 +261,7 @@ namespace TrackerLibrary
             foreach (MatchupModel m in models)
             {
                 //for bye week
-                if(m.Entries.Count == 1)
+                if (m.Entries.Count == 1)
                 {
                     m.Winner = m.Entries[0].TeamCompeting;
                     continue;
@@ -205,7 +297,7 @@ namespace TrackerLibrary
                     {
                         throw new Exception("We do not allow ties in this application.");
                     }
-                } 
+                }
             }
 
         }
@@ -216,7 +308,7 @@ namespace TrackerLibrary
             List<MatchupModel> previousRound = model.Rounds[0];
             List<MatchupModel> currRound = new List<MatchupModel>();
             MatchupModel currMatchup = new MatchupModel();
-            currMatchup.Entries= new List<MatchupEntryModel>();
+            currMatchup.Entries = new List<MatchupEntryModel>();
 
             while (round <= rounds)
             {
@@ -278,7 +370,7 @@ namespace TrackerLibrary
                 totalTeams *= 2;
             }
 
-            int output = count- totalTeams;
+            int output = count - totalTeams;
             return output;
         }
 
