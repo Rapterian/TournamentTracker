@@ -160,6 +160,13 @@ namespace TrackerUI
 
         private void scoreButton_Click(object sender, EventArgs e)
         {
+            string errorMessage = ValidateData();
+            if (errorMessage.Length > 0)
+            {
+                MessageBox.Show($"Input Error: {errorMessage}");
+                return;
+            }
+
             MatchupModel m = (MatchupModel)matchupListBox.SelectedItem;
 
             for (int i = 0; i < m.Entries.Count; i++)
@@ -184,11 +191,34 @@ namespace TrackerUI
                 }
             }
 
-            TournamentLogic.UpdateTournamentResults(tournament);
+            try
+            {
+                TournamentLogic.UpdateTournamentResults(tournament);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show($"The application had the following error: {ex.Message}");
+            }
 
             LoadMatchups();
 
             
+        }
+
+        private string ValidateData()
+        {
+            string output = "";
+
+            if (teamOneScoreValue.Value == 0 && teamTwoScoreValue.Value == 0)
+            {
+                output= "You did not enter a score for either team";
+            }else if (teamOneScoreValue.Value == teamTwoScoreValue.Value)
+            {
+                output= "We do not allow ties in this application";
+            }
+
+            return output;
         }
     }
 }
